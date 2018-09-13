@@ -26,10 +26,9 @@ Gem::Specification.new do |spec|
   spec.post_install_message = "To install shell auto-completions, use:\n  mortar install-completions"
 
   spec.add_runtime_dependency "clamp", "~> 1.3"
-  spec.add_runtime_dependency "k8s-client", "~> 0.3"
+  spec.add_runtime_dependency "k8s-client", "~> 0.4.1"
   spec.add_runtime_dependency "rouge", "~> 3.2"
   spec.add_runtime_dependency "deep_merge", "~> 1.2"
-  spec.add_runtime_dependency "tty-prompt", "~> 0.17.0"
   spec.add_runtime_dependency "pastel", "~> 0.7.2"
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
