@@ -6,11 +6,6 @@ require 'pathname'
 lib_path = File.expand_path('../../lib', Pathname.new(__FILE__).realpath)
 $LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
 
-if ARGV.first == 'install-completions'
-  require 'mortar/bash_completion_installer'
-  exit
-end
-
 require 'mortar'
 $0 = 'mortar'
 $stdout.sync = true

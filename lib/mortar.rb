@@ -12,6 +12,8 @@ autoload :Pastel, "pastel"
 module TTY
   autoload :Prompt, "tty-prompt"
 end
+autoload :Pathname, "pathname"
+autoload :FileUtils, "fileutils"
 
 require "extensions/recursive_open_struct/each"
 
