@@ -2,7 +2,7 @@
 
 ![Mortar - Manifest shooter for Kubernetes](kontena-mortar.png)
 
-Mortar is a tool to easily handle complex set of Kubernetes resources. Using `kubectl apply -f some_folder/` is pretty straightforward for simple cases, but often, especially in CI/CD pipelines things get complex. Then on the otherhand, writing everything in Helm charts is way too complex.
+Mortar is a tool to easily handle a complex set of Kubernetes resources. Using `kubectl apply -f some_folder/` is pretty straightforward for simple cases, but often, especially in CI/CD pipelines things get complex. Then on the otherhand, writing everything in Helm charts is way too complex.
 
 While we were developing [Kontena Pharos](https://kontena.io/pharos) Kubernetes distro and tooling around it, we soon realized that we really want to manage sets of resources as a single unit. This thinking got even stronger while we were transitioning many of our production solutions to run on top of Kubernetes. As this is a common problem for all Kubernetes users, Mortar was born.
 
@@ -14,11 +14,13 @@ While we were developing [Kontena Pharos](https://kontena.io/pharos) Kubernetes 
 
 ## Installation
 
-Rubygems:
+### Rubygems:
 
 `$ gem install kontena-mortar`
 
-Docker:
+To install bash/zsh auto-completions, use `mortar install-completions` after Mortar has been installed.
+
+### Docker:
 
 `$ docker pull quay.io/kontena/mortar:latest`
 
@@ -33,13 +35,19 @@ By default mortar looks for if file `~/.kube/config` exists and uses it as the c
 For CI/CD use mortar also understands following environment variables:
 
 - `KUBE_SERVER`: kubernetes api server address, for example `https://10.10.10.10:6443`
-- `KUBE_TOKEN`: service account token
+- `KUBE_TOKEN`: service account token (base64 encoded)
 - `KUBE_CA`: kubernetes CA certificate (base64 encoded)
 
 ### Deploying k8s yaml manifests
 
 ```
-$ mortar [options] <deployment-name> <src-folder>
+$ mortar fire [options] <src-folder> <deployment-name>
+```
+
+### Removing a deployment
+
+```
+$ mortar yank [options] <deployment-name>
 ```
 
 ### Docker image
@@ -54,7 +62,7 @@ pipeline:
     image: quay.io/kontena/mortar:latest
     secrets: [ kube_token, kube_ca, kube_server ]
     commands:
-      - mortar my-app k8s/
+      - mortar fire k8s/ my-app
 
 ```
 
@@ -62,7 +70,7 @@ pipeline:
 
 Mortar manages a set of resources as a single unit, we call them *shots*. A shot can have as many resources as your application needs, there's no limit to that. Much like you'd do with `kubectl apply -f my_dir/`, but Mortar actually injects information into the resources it shoots into your Kubernetes cluster. This added information, labels and annotations, will be used later on by Mortar itself or can be used with `kubectl` too. This allows the management of many resources as a single application.
 
-Most importantly, Mortar is able to use this information when re-shooting your applications. One of the most diffucult parts when using plain `kubectl apply ...` approach is the fact that it's super easy to leave behind some lingering resources. Say you have some `deployments` and a `service` in your application, each defined in their own `yaml` file. Now you remove the service and re-apply with `kubectl apply -f my_resources/`. The service will live on in your cluster. With Mortar, you don't have to worry. With the extra labels and annotations Mortar injects into the resources, it's also able to automatically prune the "un-necessary" resources from the cluster. The automatic pruning is done with `--prune` option.
+Most importantly, Mortar is able to use this information when re-shooting your applications. One of the most difficult parts when using plain `kubectl apply ...` approach is the fact that it's super easy to leave behind some lingering resources. Say you have some `deployments` and a `service` in your application, each defined in their own `yaml` file. Now you remove the service and re-apply with `kubectl apply -f my_resources/`. The service will live on in your cluster. With Mortar, you don't have to worry. With the extra labels and annotations Mortar injects into the resources, it's also able to automatically prune the "un-necessary" resources from the cluster. The automatic pruning is done with `--prune` option.
 
 See basic example [here](/examples/basic).
 
